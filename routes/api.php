@@ -21,6 +21,17 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::resource('products', ProductController::class);
+//protect route with sanctum
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::post('/products', 'ProductController@store');
+    Route::put('/products/{id}', 'ProductController@update');
+    Route::delete('/products/{id}', 'ProductController@destroy');
+});
+
+// Route::resource('products', ProductController::class);
+Route::get('/products', 'ProductController@index');
+Route::get('/products/{id}', 'ProductController@show');
+
 //after uncommenting in my route service provider class
 Route::get('/products/search/{name}', 'ProductController@search');
+
